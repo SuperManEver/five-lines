@@ -50,14 +50,14 @@ function moveToTile(newx, newy) {
     playery = newy;
 }
 function moveHorizontal(dx) {
-    if (map[playery][playerx + dx] === Tile.FLUX
-        || map[playery][playerx + dx] === Tile.AIR) {
+    if (map[playery][playerx + dx] === Tile.FLUX ||
+        map[playery][playerx + dx] === Tile.AIR) {
         moveToTile(playerx + dx, playery);
     }
-    else if ((map[playery][playerx + dx] === Tile.STONE
-        || map[playery][playerx + dx] === Tile.BOX)
-        && map[playery][playerx + dx + dx] === Tile.AIR
-        && map[playery + 1][playerx + dx] !== Tile.AIR) {
+    else if ((map[playery][playerx + dx] === Tile.STONE ||
+        map[playery][playerx + dx] === Tile.BOX) &&
+        map[playery][playerx + dx + dx] === Tile.AIR &&
+        map[playery + 1][playerx + dx] !== Tile.AIR) {
         map[playery][playerx + dx + dx] = map[playery][playerx + dx];
         moveToTile(playerx + dx, playery);
     }
@@ -71,8 +71,8 @@ function moveHorizontal(dx) {
     }
 }
 function moveVertical(dy) {
-    if (map[playery + dy][playerx] === Tile.FLUX
-        || map[playery + dy][playerx] === Tile.AIR) {
+    if (map[playery + dy][playerx] === Tile.FLUX ||
+        map[playery + dy][playerx] === Tile.AIR) {
         moveToTile(playerx, playery + dy);
     }
     else if (map[playery + dy][playerx] === Tile.KEY1) {
@@ -98,13 +98,13 @@ function update() {
     }
     for (var y = map.length - 1; y >= 0; y--) {
         for (var x = 0; x < map[y].length; x++) {
-            if ((map[y][x] === Tile.STONE || map[y][x] === Tile.FALLING_STONE)
-                && map[y + 1][x] === Tile.AIR) {
+            if ((map[y][x] === Tile.STONE || map[y][x] === Tile.FALLING_STONE) &&
+                map[y + 1][x] === Tile.AIR) {
                 map[y + 1][x] = Tile.FALLING_STONE;
                 map[y][x] = Tile.AIR;
             }
-            else if ((map[y][x] === Tile.BOX || map[y][x] === Tile.FALLING_BOX)
-                && map[y + 1][x] === Tile.AIR) {
+            else if ((map[y][x] === Tile.BOX || map[y][x] === Tile.FALLING_BOX) &&
+                map[y + 1][x] === Tile.AIR) {
                 map[y + 1][x] = Tile.FALLING_BOX;
                 map[y][x] = Tile.AIR;
             }
@@ -117,11 +117,7 @@ function update() {
         }
     }
 }
-function draw() {
-    var canvas = document.getElementById("GameCanvas");
-    var g = canvas.getContext("2d");
-    g.clearRect(0, 0, canvas.width, canvas.height);
-    // Draw map
+function drawMap(g) {
     for (var y = 0; y < map.length; y++) {
         for (var x = 0; x < map[y].length; x++) {
             if (map[y][x] === Tile.FLUX)
@@ -140,9 +136,19 @@ function draw() {
                 g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
         }
     }
-    // Draw player
+}
+function drawPlayer(g) {
     g.fillStyle = "#ff0000";
     g.fillRect(playerx * TILE_SIZE, playery * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+}
+function draw() {
+    var canvas = document.getElementById("GameCanvas");
+    var g = canvas.getContext("2d");
+    g.clearRect(0, 0, canvas.width, canvas.height);
+    // Draw map
+    drawMap(g);
+    // Draw player
+    drawPlayer(g);
 }
 function gameLoop() {
     var before = Date.now();
