@@ -92,7 +92,7 @@ function moveVertical(dy: number) {
   }
 }
 
-function update() {
+function handleInputs(): void {
   while (inputs.length > 0) {
     let current = inputs.pop();
     if (current === Input.LEFT) moveHorizontal(-1);
@@ -100,28 +100,40 @@ function update() {
     else if (current === Input.UP) moveVertical(-1);
     else if (current === Input.DOWN) moveVertical(1);
   }
+}
 
+function updateMap() {
   for (let y = map.length - 1; y >= 0; y--) {
     for (let x = 0; x < map[y].length; x++) {
-      if (
-        (map[y][x] === Tile.STONE || map[y][x] === Tile.FALLING_STONE) &&
-        map[y + 1][x] === Tile.AIR
-      ) {
-        map[y + 1][x] = Tile.FALLING_STONE;
-        map[y][x] = Tile.AIR;
-      } else if (
-        (map[y][x] === Tile.BOX || map[y][x] === Tile.FALLING_BOX) &&
-        map[y + 1][x] === Tile.AIR
-      ) {
-        map[y + 1][x] = Tile.FALLING_BOX;
-        map[y][x] = Tile.AIR;
-      } else if (map[y][x] === Tile.FALLING_STONE) {
-        map[y][x] = Tile.STONE;
-      } else if (map[y][x] === Tile.FALLING_BOX) {
-        map[y][x] = Tile.BOX;
-      }
+      updateTile(x, y);
     }
   }
+}
+
+function updateTile(x: number, y: number): void {
+  if (
+    (map[y][x] === Tile.STONE || map[y][x] === Tile.FALLING_STONE) &&
+    map[y + 1][x] === Tile.AIR
+  ) {
+    map[y + 1][x] = Tile.FALLING_STONE;
+    map[y][x] = Tile.AIR;
+  } else if (
+    (map[y][x] === Tile.BOX || map[y][x] === Tile.FALLING_BOX) &&
+    map[y + 1][x] === Tile.AIR
+  ) {
+    map[y + 1][x] = Tile.FALLING_BOX;
+    map[y][x] = Tile.AIR;
+  } else if (map[y][x] === Tile.FALLING_STONE) {
+    map[y][x] = Tile.STONE;
+  } else if (map[y][x] === Tile.FALLING_BOX) {
+    map[y][x] = Tile.BOX;
+  }
+}
+
+function update() {
+  handleInputs();
+
+  updateMap();
 }
 
 function drawMap(g: CanvasRenderingContext2D) {
@@ -186,6 +198,7 @@ const LEFT_KEY = "ArrowLeft";
 const UP_KEY = "ArrowUp";
 const RIGHT_KEY = "ArrowRight";
 const DOWN_KEY = "ArrowDown";
+
 window.addEventListener("keydown", (e) => {
   if (e.key === LEFT_KEY || e.key === "a") inputs.push(Input.LEFT);
   else if (e.key === UP_KEY || e.key === "w") inputs.push(Input.UP);
