@@ -149,11 +149,17 @@ function drawPlayer(g: CanvasRenderingContext2D) {
   g.fillRect(playerx * TILE_SIZE, playery * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 }
 
-function draw() {
+function createGraphics() {
   let canvas = document.getElementById("GameCanvas") as HTMLCanvasElement;
   let g = canvas.getContext("2d");
 
   g.clearRect(0, 0, canvas.width, canvas.height);
+
+  return g;
+}
+
+function draw() {
+  const g = createGraphics();
 
   // Draw map
   drawMap(g);
