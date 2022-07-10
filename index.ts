@@ -17,21 +17,15 @@ enum Tile {
   LOCK2,
 }
 
-enum RawInput {
-  UP,
-  DOWN,
-  LEFT,
-  RIGHT,
-}
-
-interface Input2 {
+interface Input {
   isRight(): boolean;
   isLeft(): boolean;
   isUp(): boolean;
   isDown(): boolean;
+  handle(): void;
 }
 
-class Right implements Input2 {
+class Right implements Input {
   isRight(): boolean {
     return true;
   }
@@ -44,9 +38,13 @@ class Right implements Input2 {
   isDown(): boolean {
     return false;
   }
+
+  handle(): void {
+    moveHorizontal(1);
+  }
 }
 
-class Left implements Input2 {
+class Left implements Input {
   isRight(): boolean {
     return false;
   }
@@ -59,9 +57,13 @@ class Left implements Input2 {
   isDown(): boolean {
     return false;
   }
+
+  handle(): void {
+    moveHorizontal(-1);
+  }
 }
 
-class Down implements Input2 {
+class Down implements Input {
   isRight(): boolean {
     return true;
   }
@@ -74,9 +76,13 @@ class Down implements Input2 {
   isDown(): boolean {
     return true;
   }
+
+  handle(): void {
+    moveVertical(-1);
+  }
 }
 
-class Up implements Input2 {
+class Up implements Input {
   isRight(): boolean {
     return true;
   }
@@ -88,6 +94,10 @@ class Up implements Input2 {
   }
   isDown(): boolean {
     return false;
+  }
+
+  handle(): void {
+    moveVertical(1);
   }
 }
 
@@ -102,7 +112,7 @@ let map: Tile[][] = [
   [2, 2, 2, 2, 2, 2, 2, 2],
 ];
 
-let inputs: Input2[] = [];
+let inputs: Input[] = [];
 
 function remove(tile: Tile) {
   for (let y = 0; y < map.length; y++) {
@@ -159,11 +169,8 @@ function moveVertical(dy: number) {
   }
 }
 
-function handleInput(input: Input2) {
-  if (input.isLeft()) moveHorizontal(-1);
-  else if (input.isRight()) moveHorizontal(1);
-  else if (input.isDown()) moveVertical(-1);
-  else if (input.isUp()) moveVertical(1);
+function handleInput(input: Input) {
+  input.handle();
 }
 
 function handleInputs(): void {
