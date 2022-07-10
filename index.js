@@ -16,13 +16,81 @@ var Tile;
     Tile[Tile["KEY2"] = 10] = "KEY2";
     Tile[Tile["LOCK2"] = 11] = "LOCK2";
 })(Tile || (Tile = {}));
-var Input;
-(function (Input) {
-    Input[Input["UP"] = 0] = "UP";
-    Input[Input["DOWN"] = 1] = "DOWN";
-    Input[Input["LEFT"] = 2] = "LEFT";
-    Input[Input["RIGHT"] = 3] = "RIGHT";
-})(Input || (Input = {}));
+var RawInput;
+(function (RawInput) {
+    RawInput[RawInput["UP"] = 0] = "UP";
+    RawInput[RawInput["DOWN"] = 1] = "DOWN";
+    RawInput[RawInput["LEFT"] = 2] = "LEFT";
+    RawInput[RawInput["RIGHT"] = 3] = "RIGHT";
+})(RawInput || (RawInput = {}));
+var Right = /** @class */ (function () {
+    function Right() {
+    }
+    Right.prototype.isRight = function () {
+        return true;
+    };
+    Right.prototype.isLeft = function () {
+        return false;
+    };
+    Right.prototype.isUp = function () {
+        return false;
+    };
+    Right.prototype.isDown = function () {
+        return false;
+    };
+    return Right;
+}());
+var Left = /** @class */ (function () {
+    function Left() {
+    }
+    Left.prototype.isRight = function () {
+        return false;
+    };
+    Left.prototype.isLeft = function () {
+        return true;
+    };
+    Left.prototype.isUp = function () {
+        return false;
+    };
+    Left.prototype.isDown = function () {
+        return false;
+    };
+    return Left;
+}());
+var Down = /** @class */ (function () {
+    function Down() {
+    }
+    Down.prototype.isRight = function () {
+        return true;
+    };
+    Down.prototype.isLeft = function () {
+        return false;
+    };
+    Down.prototype.isUp = function () {
+        return false;
+    };
+    Down.prototype.isDown = function () {
+        return true;
+    };
+    return Down;
+}());
+var Up = /** @class */ (function () {
+    function Up() {
+    }
+    Up.prototype.isRight = function () {
+        return true;
+    };
+    Up.prototype.isLeft = function () {
+        return false;
+    };
+    Up.prototype.isUp = function () {
+        return true;
+    };
+    Up.prototype.isDown = function () {
+        return false;
+    };
+    return Up;
+}());
 var playerx = 1;
 var playery = 1;
 var map = [
@@ -84,17 +152,20 @@ function moveVertical(dy) {
         moveToTile(playerx, playery + dy);
     }
 }
+function handleInput(input) {
+    if (input.isLeft())
+        moveHorizontal(-1);
+    else if (input.isRight())
+        moveHorizontal(1);
+    else if (input.isDown())
+        moveVertical(-1);
+    else if (input.isUp())
+        moveVertical(1);
+}
 function handleInputs() {
     while (inputs.length > 0) {
         var current = inputs.pop();
-        if (current === Input.LEFT)
-            moveHorizontal(-1);
-        else if (current === Input.RIGHT)
-            moveHorizontal(1);
-        else if (current === Input.UP)
-            moveVertical(-1);
-        else if (current === Input.DOWN)
-            moveVertical(1);
+        handleInput(current);
     }
 }
 function updateMap() {
@@ -181,11 +252,11 @@ var RIGHT_KEY = "ArrowRight";
 var DOWN_KEY = "ArrowDown";
 window.addEventListener("keydown", function (e) {
     if (e.key === LEFT_KEY || e.key === "a")
-        inputs.push(Input.LEFT);
+        inputs.push(new Left());
     else if (e.key === UP_KEY || e.key === "w")
-        inputs.push(Input.UP);
+        inputs.push(new Up());
     else if (e.key === RIGHT_KEY || e.key === "d")
-        inputs.push(Input.RIGHT);
+        inputs.push(new Right());
     else if (e.key === DOWN_KEY || e.key === "s")
-        inputs.push(Input.DOWN);
+        inputs.push(new Down());
 });
